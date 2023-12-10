@@ -3,11 +3,7 @@ pipeline {
     tools {
         nodejs "node"
     }
-    environment {
-        imageName = "saida777/react-app"
-        registryCredential = 'saida777'
-        dockerImage = ''
-    }
+
     stages {
         stage('Install Dependencies') {
             steps {
@@ -24,18 +20,19 @@ pipeline {
         stage('Building Image') {
             steps {
                 script {
-                    dockerImage = docker.build(imageName)
+                    bat 'docker build -t devops/react-frontend '
                 }
             }
         }
 
-        stage('Deploy Image') {
+        stage('Push Image To Hub') {
             steps {
                 script {
-                    docker.withRegistry("https://registry.hub.docker.com", 'dockerhub-cred') {
-                        dockerImage.push("${env.BUILD_NUMBER}")
-                    }
+                    bat 'docker login -u saida777 -p Pa171709@'
+                    bat 'docker tag devops/react-frontend saida777/ss:devops-springboot-backend'
+                    bat 'docker push saida777/ss:devops-springboot-backend'
                 }
+            }
             }
         }
     }
