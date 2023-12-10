@@ -11,7 +11,7 @@ COPY package.json /app
 RUN npm install
 
 # Copy the rest of the application code to the container
-COPY ./app
+COPY . /app
 
 # Expose the port on which the app will run (default for React is 3000)
 EXPOSE 3000
