@@ -20,7 +20,7 @@ pipeline {
         stage('Building Image') {
             steps {
                 script {
-                    bat 'docker build -t devops/react-frontend '
+                    bat 'docker build -t devops/react-frontend .'
                 }
             }
         }
@@ -33,7 +33,7 @@ pipeline {
                     bat 'docker push saida777/ss:devops-springboot-backend'
                 }
             }
-            }
         }
     }
 }
+
