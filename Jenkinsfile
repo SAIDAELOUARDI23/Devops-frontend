@@ -16,7 +16,7 @@ pipeline {
         
         stage('Run Tests') {
             steps {
-                bat ' bat 'npm test -- --passWithNoTests''
+                bat 'npm test -- --passWithNoTests''
             }
         stage('Building Image') {
             steps {
