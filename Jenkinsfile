@@ -48,7 +48,7 @@ pipeline{
         
         stage("TRIVY"){
             steps{
-                sh "trivy image dab8106/2048:latest > trivy.txt" 
+                sh "trivy image saida777/2048:latest > trivy.txt" 
             }
         }
         stage('Deploy to container'){
