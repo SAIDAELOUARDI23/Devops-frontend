@@ -1,20 +1,23 @@
-# Use an official Node.js runtime as a base image
-FROM node:latest
+# Use Node.js 16 as the base image
+FROM node:16
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the container
-COPY package.json /app
+COPY package*.json ./
 
 # Install project dependencies
 RUN npm install
 
 # Copy the rest of the application code to the container
-COPY . /app
+COPY . .
 
-# Expose the port on which the app will run (default for React is 3000)
+# Build the React app
+RUN npm run build
+
+# Expose port 3000 for the React app
 EXPOSE 3000
 
-# Define the command to run the application
-CMD ["npm", "run","start"]
+# Start the React app
+CMD ["npm", "start"]
