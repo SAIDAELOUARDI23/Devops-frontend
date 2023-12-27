@@ -38,13 +38,29 @@ pipeline{
                 sh "trivy fs . > trivyfs.txt"
             }
         }
-         
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker build -t 2048 ."
+                       sh "docker tag 2048 saida777/2048:latest "
+                       sh "docker push saida777/2048:latest "
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
+            }
+        }
         
     }
-        
     post {
         always {
             cleanWs()
         }
     }
 }
+   
