@@ -1,39 +1,77 @@
-pipeline {
+pipeline{
     agent any
-    tools {
-        nodejs "node"
+    tools{
+        jdk 'java17'
+        nodejs 'node16'
     }
-
+    environment {
+        SCANNER_HOME=tool 'sonarqube-scanner'
+    }
     stages {
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=wm-demo0 -Dsonar.projectKey=wm-demo0_front-end-devsecop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io'''
+                }
+            }
+        }
+        stage("Quality gate"){
+           steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                }
+            } 
+        }
         stage('Install Dependencies') {
             steps {
-                bat 'npm install'
+                sh "npm install"
             }
         }
-
-        stage('Run Tests') {
+        stage('OWASP SCAN') {
             steps {
-                bat 'npm test -- --passWithNoTests'
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-
-        stage('Building Image') {
+        stage('TRIVY FS SCAN') {
             steps {
-                script {
-                    bat 'docker build -t devops/react-frontend .'
+                sh "trivy fs . > trivyfs.txt"
+            }
+        }
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker build -t 2048 ."
+                       sh "docker tag 2048 saida777/2048:latest "
+                       sh "docker push saida777/2048:latest "
+                    }
                 }
             }
         }
-
-        stage('Push Image To Hub') {
-            steps {
-                script {
-                    bat 'docker login -u saida777 -p Pa171709@'
-                    bat 'docker tag devops/react-frontend saida777/front-end:devops-ReactApp'
-                    bat 'docker push saida777/front-end:devops-ReactApp'
+        stage("TRIVY"){
+            steps{
+                sh "trivy image saida/2048:latest > trivy.txt" 
+            }
+        }
+        stage('Deploy to container'){
+            steps{
+                sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
+            }
+        }
+        stage('Deploy to kubernets'){
+            steps{
+                script{
+                    withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                       sh 'kubectl apply -f deployment.yaml'
+                  }
                 }
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
-
