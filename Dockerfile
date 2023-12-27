@@ -13,7 +13,7 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
-# Build the React app
+# Build the React app without the --openssl-legacy-provider option
 RUN npm run build
 
 # Expose port 3000 for the React app
