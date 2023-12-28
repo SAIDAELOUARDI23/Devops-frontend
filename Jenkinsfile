@@ -34,14 +34,17 @@ pipeline{
             }
         }
 
-       stage('Deploy to container'){
-    steps{
-        sh 'docker stop 2048 || true'  // Stop the container if it's running (ignore errors if not running)
-        sh 'docker rm 2048 || true'    // Remove the container (ignore errors if not present)
-        sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
-    }
-}
-
+        stage("Docker Build & Push"){
+            steps{
+                script{
+                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                       sh "docker build -t 2048 ."
+                       sh "docker tag 2048 saida777/2048:latest "
+                       sh "docker push saida777/2048:latest "
+                    }
+                }
+            }
+        }
         
         stage("TRIVY"){
             steps{
@@ -50,6 +53,8 @@ pipeline{
         }
         stage('Deploy to container'){
             steps{
+                sh 'docker stop 2048
+                sh 'docker rm 2048
                 sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
             }
         }
