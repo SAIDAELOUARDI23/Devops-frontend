@@ -53,8 +53,8 @@ pipeline{
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker stop 2048
-                sh 'docker rm 2048
+                sh 'docker stop 2048'
+                sh 'docker rm 2048'
                 sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
             }
         }
