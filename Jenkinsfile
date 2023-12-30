@@ -5,20 +5,17 @@ pipeline {
         jdk 'java17'
         nodejs 'node16'
         sonarqubeScanner 'sonarqube-scanner'
-        dependencyCheck 'ODC-Check'
-        dockerTool 'docker'
     }
 
     environment {
-        SONAR_ORGANIZATION = 'wm-demo0'
-        SONAR_PROJECT_KEY = 'wm-demo0_front-end-devsecop'
+        SCANNER_HOME = tool 'sonarqube-scanner'
     }
 
     stages {
-        stage("SonarQube Analysis") {
+        stage("Sonarqube Analysis") {
             steps {
                 withSonarQubeEnv('sonar-server') {
-                    sh "sonar-scanner -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=."
+                    sh "$SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=wm-demo0 -Dsonar.projectKey=wm-demo0_front-end-devsecop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io"
                 }
             }
         }
@@ -26,9 +23,9 @@ pipeline {
         stage("Quality Gate") {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
                 }
-            }
+            } 
         }
 
         stage('Install Dependencies') {
@@ -39,8 +36,8 @@ pipeline {
 
         stage('OWASP SCAN') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'ODC-Check'
-                archiveArtifacts 'dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
 
@@ -49,8 +46,7 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh "docker build -t 2048 ."
-                        sh "docker run -d --name node-app-container -p 3000:3000  2048"
-                       
+                        sh "docker run -d --name 2048 -p 3000:3000 2048"
                     }
                 }
             }
@@ -66,12 +62,6 @@ pipeline {
     post {
         always {
             cleanWs()
-        }
-        success {
-            echo "Pipeline successfully completed!"
-        }
-        failure {
-            echo "Pipeline failed! Check logs for details."
         }
     }
 }
