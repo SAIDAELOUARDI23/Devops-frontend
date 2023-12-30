@@ -1,62 +1,77 @@
-pipeline{
+pipeline {
     agent any
-    tools{
+
+    tools {
         jdk 'java17'
         nodejs 'node16'
+        sonarqubeScanner 'sonarqube-scanner'
+        dependencyCheck 'ODC-Check'
+        dockerTool 'docker'
     }
+
     environment {
-        SCANNER_HOME=tool 'sonarqube-scanner'
+        SONAR_ORGANIZATION = 'wm-demo0'
+        SONAR_PROJECT_KEY = 'wm-demo0_front-end-devsecop'
     }
+
     stages {
-        stage("Sonarqube Analysis "){
-            steps{
+        stage("SonarQube Analysis") {
+            steps {
                 withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=wm-demo0 -Dsonar.projectKey=wm-demo0_front-end-devsecop -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io'''
+                    sh "sonar-scanner -Dsonar.organization=${SONAR_ORGANIZATION} -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=."
                 }
             }
         }
-        stage("Quality gate"){
-           steps {
+
+        stage("Quality Gate") {
+            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
                 }
-            } 
+            }
         }
+
         stage('Install Dependencies') {
             steps {
                 sh "npm install"
             }
         }
+
         stage('OWASP SCAN') {
             steps {
-                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'ODC-Check'
+                archiveArtifacts 'dependency-check-report.xml'
             }
         }
 
-        stage("Docker Build & Push"){
-            steps{
-                script{
-                   withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build -t 2048 ."
-                       sh "docker run -d --name node-app-container -p 3000  2048 saida777/2048:latest "
+        stage("Docker Build & Push") {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                        sh "docker build -t 2048 ."
+                        sh "docker run -d --name node-app-container -p 3000:3000  2048"
                        
                     }
                 }
             }
         }
-        
-        stage("TRIVY"){
-            steps{
-                sh "trivy image saida777/2048:latest > trivy.txt" 
+
+        stage("TRIVY") {
+            steps {
+                sh "trivy image saida777/2048:latest > trivy.txt"
             }
         }
-       
-       
+    }
+
     post {
         always {
             cleanWs()
         }
+        success {
+            echo "Pipeline successfully completed!"
+        }
+        failure {
+            echo "Pipeline failed! Check logs for details."
+        }
     }
 }
-   
