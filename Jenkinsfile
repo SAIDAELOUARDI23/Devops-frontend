@@ -58,16 +58,7 @@ pipeline{
                 sh 'docker run -d --name 2048 -p 3000:3000 saida777/2048:latest'
             }
         }
-        stage('Deploy to kubernets'){
-            steps{
-                script{
-                    
-                       kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "k8s")
-                  }
-                }
-            }
-        }
-    }
+       
     post {
         always {
             cleanWs()
