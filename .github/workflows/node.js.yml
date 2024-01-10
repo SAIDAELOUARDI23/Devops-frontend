@@ -24,6 +24,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm' 
+    - run: npm install --save-dev @babel/plugin-proposal-private-property-in-object
+
     - run: npm install
     - run: npx browserslist@latest --update-db
 
