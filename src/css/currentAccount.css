@@ -1,0 +1,88 @@
+.current-account {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .logo {
+    max-width: 150px;
+  }
+  
+  .navigation ul {
+    list-style: none;
+    display: flex;
+  }
+  
+  .navigation li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .balance-section {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .balance-amount {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .balance-block {
+    background-color: #007bff; /* A blue shade */
+    color: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .balance {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  .transactions-section {
+    padding: 0 20px;
+  }
+  
+  .search-box {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .transactions-table th, .transactions-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .transactions-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .no-transactions {
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+  }
+  
+  

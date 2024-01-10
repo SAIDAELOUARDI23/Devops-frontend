@@ -1,0 +1,55 @@
+.account-info {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 20px;
+  background-color: #f5f5f5;
+  margin: 20px;
+  border-radius: 10px;
+}
+
+.account-box {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin: 10px;
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+
+.account-box:hover {
+  transform: translateY(-5px);
+}
+
+.account-title {
+  color: #333;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.account-details {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.account-label {
+  font-weight: bold;
+  color: #555;
+}
+
+.savings-account {
+  border-left: 4px solid #4caf50;
+}
+
+.current-account {
+  border-left: 4px solid #2196f3;
+}
+/* userFront.css */
+
+.container {
+  background-image: url('../../public/images/signInUpBackground.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}

@@ -1,0 +1,40 @@
+.savings-account {
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .logo {
+    max-width: 150px;
+  }
+  
+  .navigation ul {
+    list-style: none;
+    display: flex;
+  }
+  
+  .navigation li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .balance-section {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  .balance-amount {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  

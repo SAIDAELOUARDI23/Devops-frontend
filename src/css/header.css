@@ -1,0 +1,46 @@
+/* Header.css */
+.header {
+    background-color: #000; /* Black background */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .logo {
+    /* Add styles for your logo here */
+  }
+  
+  .navigation ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    color: black;
+  }
+  
+  .navigation li {
+    padding: 0.5rem;
+    position: relative;
+    color: black;
+  }
+  
+  .navigation li ul {
+    display: none; /* Hide dropdowns initially */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff; /* White background for dropdowns */
+  }
+  
+  .navigation li:hover ul {
+    display: block; /* Show dropdown on hover */
+  }
+  
+  .navigation li a {
+    color: #000; 
+    text-decoration: none;
+  }
+  
+  /* Add more styles as needed */
+  
